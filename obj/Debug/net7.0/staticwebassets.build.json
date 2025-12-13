@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "IqfGWtYMA3ZKnjNCq9jKTvvKx+NajwLmWCPzyVxLqO0=",
+  "Source": "TicketApi",
+  "BasePath": "_content/TicketApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
