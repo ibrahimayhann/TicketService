@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+ï»¿using System.Text.Json.Serialization;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -12,34 +12,24 @@ var builder = WebApplication.CreateBuilder(args);
 // ------------------------------------------------------------
 // CONTROLLERS + JSON AYARLARI + FILTER
 // ------------------------------------------------------------
-// AddControllers sadece 1 kez çaðrýlýr.
-// - JsonStringEnumConverter: Enum deðerlerini sayýsal deðil string olarak döndürür (örn: "Open").
-// - ModelStateValidationFilter: Model doðrulama hatalarýnda standart 400 yerine kendi exception formatýný üretmek için kullanýlýr.
 builder.Services.AddControllers(options =>
 {
-    // Burada global filter olarak ekliyoruz -> her action'a otomatik uygulanýr.
     options.Filters.AddService<ModelStateValidationFilter>();
 })
 .AddJsonOptions(o =>
 {
-    // Enum'lar JSON çýktýsýnda string olarak görünsün diye converter ekleniyor.
     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
 // ------------------------------------------------------------
 // FLUENTVALIDATION
 // ------------------------------------------------------------
-// AutoValidation: FluentValidation kurallarýný otomatik çalýþtýrýr (Model binding sonrasý).
 builder.Services.AddFluentValidationAutoValidation();
-
-// Bu assembly içindeki validator'larý otomatik keþfeder ve DI'a ekler.
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // ------------------------------------------------------------
-// MODELSTATE DAVRANIÞI
+// MODELSTATE DAVRANIÅžI
 // ------------------------------------------------------------
-// Varsayýlan davranýþ: ModelState invalid ise ASP.NET otomatik 400 döner.
-// Biz bunu kapatýyoruz; çünkü hatalarý kendi Exception formatýmýzla döneceðiz.
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
@@ -48,7 +38,6 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 // ------------------------------------------------------------
 // FILTER DI
 // ------------------------------------------------------------
-// ModelState invalid durumunu yakalayýp RequestValidationException fýrlatacak filter DI'a ekleniyor.
 builder.Services.AddScoped<ModelStateValidationFilter>();
 
 // ------------------------------------------------------------
@@ -60,18 +49,27 @@ builder.Services.AddSwaggerGen();
 // ------------------------------------------------------------
 // DB + DI
 // ------------------------------------------------------------
-// AppDbContext: SQL Server connection string appsettings.json içindeki DefaultConnection'dan okunur.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Ticket servis implementasyonu DI'a ekleniyor.
 builder.Services.AddScoped<ITicketService, TicketService>();
 
 // ------------------------------------------------------------
 // GLOBAL EXCEPTION MIDDLEWARE DI
 // ------------------------------------------------------------
-// Middleware'i UseMiddleware ile çalýþtýracaðýmýz için DI'a ekliyoruz.
 builder.Services.AddScoped<ExceptionMiddleware>();
+
+// ------------------------------------------------------------
+// CORS (Vite Frontend: http://localhost:5173)
+// ------------------------------------------------------------
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ViteCors", policy =>
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+    );
+});
 
 var app = builder.Build();
 
@@ -86,14 +84,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// âœ… CORS middleware (Controller'lara gitmeden Ã¶nce Ã§alÄ±ÅŸmalÄ±)
+app.UseCors("ViteCors");
+
 // ------------------------------------------------------------
 // GLOBAL EXCEPTION MIDDLEWARE
 // ------------------------------------------------------------
-// Önemli: Pipeline'da mümkün olduðunca erken çalýþmalý ki controller dahil hatalarý yakalasýn.
 app.UseMiddleware<ExceptionMiddleware>();
 
-// Eðer ileride JWT/Authentication ekleyeceksen:
-// app.UseAuthentication();  // <-- Authentication varsa Authorization'dan önce gelmeli.
+// EÄŸer ileride JWT/Authentication ekleyeceksen:
+// app.UseAuthentication();  // <-- Authentication varsa Authorization'dan Ã¶nce gelmeli.
 app.UseAuthorization();
 
 app.MapControllers();

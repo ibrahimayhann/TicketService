@@ -160,4 +160,14 @@ public class TicketsController : ControllerBase
 
         return Ok(result);
     }
+
+    // GET api/tickets/reports/priority
+    [HttpGet("reports/priority")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<TicketPriorityReportResponse>>> GetTicketCountByPriority()
+    {
+        var result = await _service.GetTicketCountByPriorityAsync();
+        return Ok(result);
+    }
+
 }

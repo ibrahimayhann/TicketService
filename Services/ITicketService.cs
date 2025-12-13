@@ -87,4 +87,6 @@ public interface ITicketService
     //
     // Bu tarz raporlar genelde GROUP BY ile DB tarafında hesaplanır.
     Task<List<TicketStatusReportResponse>> GetTicketCountByStatusAsync();
+    Task<List<TicketPriorityReportResponse>> GetTicketCountByPriorityAsync();
+
 }

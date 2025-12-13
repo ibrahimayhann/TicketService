@@ -325,4 +325,30 @@ public class TicketService : ITicketService
 
     // SQL karşılığı:
     // SELECT Status, COUNT(*) FROM Tickets GROUP BY Status;
+
+    public async Task<List<TicketPriorityReportResponse>> GetTicketCountByPriorityAsync()
+    {
+        // Priority bazında sayım raporu: DB tarafında GROUP BY
+        var raw = await _db.Tickets
+            .AsNoTracking()
+            .GroupBy(t => t.Priority)
+            .Select(g => new TicketPriorityReportResponse
+            {
+                Priority = g.Key,
+                Count = g.Count()
+            })
+            .ToListAsync();
+
+        // Enum’daki tüm priority değerleri görünsün (0 olanlar dahil)
+        var all = Enum.GetValues<TicketPriority>()
+            .Select(p => new TicketPriorityReportResponse
+            {
+                Priority = p,
+                Count = raw.FirstOrDefault(x => x.Priority == p)?.Count ?? 0
+            })
+            .ToList();
+
+        return all;
+    }
+
 }
