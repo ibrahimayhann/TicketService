@@ -208,4 +208,19 @@ public class TicketService : ITicketService
         Assignee = t.Assignee,
         Tags = t.Tags
     };
+
+    public async Task<List<TicketStatusReportResponse>> GetTicketCountByStatusAsync()
+    {
+        return await _db.Tickets
+            .AsNoTracking()
+            .GroupBy(t => t.Status)
+            .Select(g => new TicketStatusReportResponse
+            {
+                Status = g.Key,
+                Count = g.Count()
+            })
+            .ToListAsync();
+    }
+    //SELECT Status, COUNT(*) FROM Tickets GROUP BY Status;
+
 }

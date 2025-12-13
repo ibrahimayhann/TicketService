@@ -118,4 +118,13 @@ public class TicketsController : ControllerBase
         return NoContent();
     }
 
+    // GET api/tickets/reports/status
+    [HttpGet("reports/status")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<TicketStatusReportResponse>>> GetTicketCountByStatus()
+    {
+        var result = await _service.GetTicketCountByStatusAsync();
+        return Ok(result);
+    }
+
 }

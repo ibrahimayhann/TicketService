@@ -115,7 +115,7 @@ göstermek amacıyla geliştirilmiştir.
 
 
 
-📌 Possible Improvements
+ Possible Improvements
 
 Authentication & Authorization (JWT)
 
@@ -125,6 +125,14 @@ Logging (Serilog)
 
 Dockerization
 
+
+
+SQL Reports
+
+Bu projede, SQL tabanlı raporlama sorguları DbScripts klasörü altında yer almaktadır.
+Duruma Göre Ticket Sayısı Raporu:
+Ticket kayıtlarının durumlarına göre (Open, InProgress, Resolved, Closed) dağılımını gösteren, GROUP BY kullanılarak oluşturulmuş toplu (aggregate) bir rapor sorgusudur.
+Enum değerleri, rapor okunabilirliğini artırmak amacıyla CASE yapısı ile anlamlı durum isimlerine dönüştürülmüştür.
 
 
 Author

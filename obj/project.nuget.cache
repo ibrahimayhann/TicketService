@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ycEL8vAhIVCifghCqW1zm1vRQnpojV4TwtbM0TXsu3A7lfMnbT5EgT/JahBrbkUxVY3g0KKk4XxT4Id+xZ3H4Q==",
+  "dgSpecHash": "4PTdhuG8cHememtOI0S4Vmy0AOpmn9JK1K2WOWiVzlFQckHLJGhmroypdnwEDyCNnsHe7Ow85aDyQu9xKw/GZA==",
   "success": true,
-  "projectFilePath": "D:\\asp.netcore proje\\TicketApi\\TicketApi\\TicketApi.csproj",
+  "projectFilePath": "D:\\TicketApi\\TicketApi\\TicketApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ihali\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\ihali\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",

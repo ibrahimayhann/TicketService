@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\asp.netcore proje\\TicketApi\\TicketApi\\TicketApi.csproj": {}
+    "D:\\TicketApi\\TicketApi\\TicketApi.csproj": {}
   },
   "projects": {
-    "D:\\asp.netcore proje\\TicketApi\\TicketApi\\TicketApi.csproj": {
+    "D:\\TicketApi\\TicketApi\\TicketApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\asp.netcore proje\\TicketApi\\TicketApi\\TicketApi.csproj",
+        "projectUniqueName": "D:\\TicketApi\\TicketApi\\TicketApi.csproj",
         "projectName": "TicketApi",
-        "projectPath": "D:\\asp.netcore proje\\TicketApi\\TicketApi\\TicketApi.csproj",
+        "projectPath": "D:\\TicketApi\\TicketApi\\TicketApi.csproj",
         "packagesPath": "C:\\Users\\ihali\\.nuget\\packages\\",
-        "outputPath": "D:\\asp.netcore proje\\TicketApi\\TicketApi\\obj\\",
+        "outputPath": "D:\\TicketApi\\TicketApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ihali\\AppData\\Roaming\\NuGet\\NuGet.Config",

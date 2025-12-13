@@ -16,4 +16,7 @@ public interface ITicketService
     Task UpdateCommentAsync(int commentId, UpdateTicketCommentRequest request);
     Task DeleteCommentAsync(int commentId);
 
+    Task<List<TicketStatusReportResponse>> GetTicketCountByStatusAsync();
+
+
 }
