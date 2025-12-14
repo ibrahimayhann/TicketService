@@ -115,15 +115,6 @@ göstermek amacıyla geliştirilmiştir.
 
 
 
- Possible Improvements
-
-Authentication & Authorization (JWT)
-
-Role-based access control
-
-Logging (Serilog)
-
-Dockerization
 
 
 
