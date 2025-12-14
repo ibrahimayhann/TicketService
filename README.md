@@ -87,7 +87,7 @@ dotnet run
 
 Swagger arayüzü:
 
-https://localhost:5001/swagger
+https://localhost:7219/swagger/index.html
 
  Design Decisions
 
