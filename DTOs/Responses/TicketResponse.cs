@@ -12,8 +12,8 @@ public class TicketResponse
     public TicketStatus Status { get; set; }
     public TicketPriority Priority { get; set; }
 
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
 
     public string? Assignee { get; set; }
     public string? Tags { get; set; }

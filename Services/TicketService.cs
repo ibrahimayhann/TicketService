@@ -8,13 +8,10 @@ using TicketApi.Exceptions;
 
 namespace TicketApi.Services;
 
-// TicketService:
-// - Ticket ile ilgili tüm iş kuralları burada.
-// - Controller sadece burayı çağırır, DB sorgusuna girmez.
-// - NotFound gibi durumlarda exception fırlatıp middleware'in 404'e çevirmesini bekleriz.
+
 public class TicketService : ITicketService
 {
-    // EF Core DbContext (SQL Server ile konuşur)
+    
     private readonly AppDbContext _db;
 
     public TicketService(AppDbContext db)
@@ -25,9 +22,7 @@ public class TicketService : ITicketService
 
     public async Task<PagedResult<TicketResponse>> GetAllAsync(TicketQueryRequest query)
     {
-        // ------------------------------------------------------------
-        // SAYFALAMA PARAMETRELERİNİ GÜVENLİ HALE GETİR
-        // ------------------------------------------------------------
+       
         // Page 0/negatif gelirse 1 yap (en az 1. sayfa)
         var page = query.Page < 1 ? 1 : query.Page;
 
@@ -37,23 +32,10 @@ public class TicketService : ITicketService
         // Çok büyük pageSize istemesin diye üst sınır koyuyoruz
         if (pageSize > 100) pageSize = 100;
 
-        // ------------------------------------------------------------
-        // TEMEL QUERY
-        // ------------------------------------------------------------
-        // AsNoTracking:
-        // - Okuma amaçlı listelerde performans sağlar
-        // - Change tracking yapmadığı için daha hızlıdır
+        
         var q = _db.Tickets.AsNoTracking().AsQueryable();
 
-        // ------------------------------------------------------------
-        // SEARCH (ARAMA) -> EF.Functions.Like
-        // ------------------------------------------------------------
-        // Neden Like?
-        // - Contains çoğu zaman LIKE '%...%' üretir ve veri büyüdükçe pahalı olabilir.
-        // - Like kullandığımızda ne yaptığımız daha net olur.
-        // Not:
-        // - Like da yine '%...%' ile başlıyorsa index avantajı sınırlı olabilir,
-        //   ama küçük/orta projelerde yeterli ve anlaşılır.
+       
         if (!string.IsNullOrWhiteSpace(query.Search))
         {
             // Trim: baştaki/sondaki boşlukları at
@@ -68,23 +50,16 @@ public class TicketService : ITicketService
                 (t.Tags != null && EF.Functions.Like(t.Tags, s)));
         }
 
-        // ------------------------------------------------------------
-        // FILTER (FİLTRE)
-        // ------------------------------------------------------------
-        // Nullable filtreler:
-        // - HasValue: kullanıcı gerçekten filtre göndermiş mi?
+       
         if (query.Status.HasValue)
             q = q.Where(t => t.Status == query.Status.Value);
 
         if (query.Priority.HasValue)
             q = q.Where(t => t.Priority == query.Priority.Value);
 
-        // ------------------------------------------------------------
+
         // SORT (SIRALAMA) -> BUG FIXED
-        // ------------------------------------------------------------
-        // Önceden createdAtDesc case'i yoktu; default'a düşüp desc veriyordu.
-        // Bu "tesadüfen çalışıyordu" ama API'de kafa karıştırır.
-        // Şimdi case'leri netleştirdik.
+        
         q = (query.Sort ?? "createdAtDesc").ToLowerInvariant() switch
         {
             "createdatasc" => q.OrderBy(t => t.CreatedAt),
@@ -97,30 +72,17 @@ public class TicketService : ITicketService
             _ => q.OrderByDescending(t => t.CreatedAt)
         };
 
-        // ------------------------------------------------------------
-        // TOPLAM KAYIT SAYISI (PAGING İÇİN)
-        // ------------------------------------------------------------
-        // Frontend genelde:
-        // - toplam kaç kayıt var
-        // - kaç sayfa çıkar
-        // gibi bilgileri ister.
+       
         var totalCount = await q.CountAsync();
 
-        // ------------------------------------------------------------
-        // SAYFALAMA UYGULA + DTO PROJEKSİYONU
-        // ------------------------------------------------------------
-        // Skip: kaç kayıt atla
-        // Take: kaç kayıt al
-        // Select(ToResponse): entity'yi dışarıya direkt açmak yerine DTO dön (daha profesyonel)
+       
         var items = await q
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .Select(t => ToResponse(t))
             .ToListAsync();
 
-        // ------------------------------------------------------------
         // PAGED RESULT DÖN
-        // ------------------------------------------------------------
         return new PagedResult<TicketResponse>
         {
             Items = items,
@@ -145,9 +107,7 @@ public class TicketService : ITicketService
 
     public async Task<TicketResponse> CreateAsync(CreateTicketRequest request)
     {
-        // Yeni kayıt oluştururken:
-        // - Status gibi default değerleri server belirler (client'a bırakma)
-        // - CreatedAt/UpdatedAt server saatine göre set edilir
+        
         var ticket = new Ticket
         {
             Title = request.Title,
@@ -202,25 +162,19 @@ public class TicketService : ITicketService
 
         _db.Tickets.Remove(ticket);
 
-        // DbContext'te Cascade ayarlıysa:
         // - Ticket silinince bağlı TicketComment kayıtları da otomatik silinir.
         await _db.SaveChangesAsync();
     }
 
     public async Task<List<TicketCommentResponse>> GetCommentsAsync(int ticketId)
     {
-        // ------------------------------------------------------------
-        // 1) Ticket var mı? (404)
-        // ------------------------------------------------------------
         // AnyAsync hızlıdır: sadece var/yok kontrolü
         var exists = await _db.Tickets.AsNoTracking().AnyAsync(x => x.Id == ticketId);
         if (!exists)
             throw new NotFoundException($"Ticket not found. Id={ticketId}");
 
-        // ------------------------------------------------------------
         // 2) Yorumları getir
-        // ------------------------------------------------------------
-        // TicketId index'li olduğu için bu sorgu verimli olur.
+  
         return await _db.TicketComments.AsNoTracking()
             .Where(c => c.TicketId == ticketId)
             .OrderByDescending(c => c.CreatedAt)
@@ -242,9 +196,7 @@ public class TicketService : ITicketService
         if (!ticketExists)
             throw new NotFoundException($"Ticket not found. Id={ticketId}");
 
-        // Trim:
-        // - boşlukla gelen girişleri temizler
-        // Not: FluentValidation ile zaten boş/uzunluk kontrolü yapıyorsan bu ekstra koruma olur.
+        
         var comment = new TicketComment
         {
             TicketId = ticketId,
@@ -289,12 +241,9 @@ public class TicketService : ITicketService
         await _db.SaveChangesAsync();
     }
 
-    // ------------------------------------------------------------
+    
     // ENTITY -> DTO MAPPING
-    // ------------------------------------------------------------
-    // Entity'yi dışarıya direkt vermek yerine DTO ile döndürmek:
-    // - gereksiz alanları saklar
-    // - ileride entity değişse bile API sözleşmesi daha stabil kalır
+    
     private static TicketResponse ToResponse(Ticket t) => new()
     {
         Id = t.Id,
@@ -311,7 +260,6 @@ public class TicketService : ITicketService
     public async Task<List<TicketStatusReportResponse>> GetTicketCountByStatusAsync()
     {
         // Status bazında sayım raporu:
-        // DB tarafında GROUP BY ile hesaplamak en doğru ve performanslı yoldur.
         return await _db.Tickets
             .AsNoTracking()
             .GroupBy(t => t.Status)
@@ -323,8 +271,7 @@ public class TicketService : ITicketService
             .ToListAsync();
     }
 
-    // SQL karşılığı:
-    // SELECT Status, COUNT(*) FROM Tickets GROUP BY Status;
+    
 
     public async Task<List<TicketPriorityReportResponse>> GetTicketCountByPriorityAsync()
     {

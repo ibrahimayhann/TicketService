@@ -12,11 +12,11 @@ namespace TicketApi.Entities
         public TicketStatus Status { get; set; } = TicketStatus.Open;
         public TicketPriority Priority { get; set; } = TicketPriority.Medium;
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTimeOffset CreatedAt { get; set; } 
+        public DateTimeOffset UpdatedAt { get; set; } 
 
         public string? Assignee { get; set; }
-        public string? Tags { get; set; } // şimdilik CSV: "bug,ui,urgent"
+        public string? Tags { get; set; } 
 
         public ICollection<TicketComment> Comments { get; set; } = new List<TicketComment>();
 

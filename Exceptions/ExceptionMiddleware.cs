@@ -111,11 +111,7 @@ public sealed class ExceptionMiddleware : IMiddleware
             Errors = errors
         };
 
-        // ------------------------------------------------------------
-        // JSON SERIALIZATION GÜVENCESİ
-        // ------------------------------------------------------------
-        // Normalde Serialize patlamaz, ama "son çare" güvenliği iyi pratiktir.
-        // Eğer Serialize hata verirse bile kullanıcıya basit bir JSON döndürürüz.
+        // JSON SERIALIZATION GÜVENCESİ  Eğer Serialize hata verirse bile kullanıcıya basit bir JSON döndürürüz.
         string json;
         try
         {

@@ -9,7 +9,6 @@ public sealed class TicketQueryRequest
     public TicketStatus? Status { get; set; }
     public TicketPriority? Priority { get; set; }
 
-    // createdAtDesc, createdAtAsc, updatedAtDesc, updatedAtAsc
     public string? Sort { get; set; } = "createdAtDesc";
 
     public int Page { get; set; } = 1;

@@ -8,5 +8,5 @@ public sealed class TicketCommentResponse
     public string Author { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
 
-    public DateTime CreatedAt { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
 }

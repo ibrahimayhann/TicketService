@@ -10,5 +10,5 @@ public class TicketComment
     public string Author { get; set; } = default!;
     public string Message { get; set; } = default!;
 
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTimeOffset CreatedAt { get; set; } 
 }
