@@ -18,7 +18,7 @@ public class TicketsController : ControllerBase
     // TICKETS
 
     [HttpGet] 
-    [ProducesResponseType(StatusCodes.Status200OK)] // Başarılı olursa 200 döner
+    [ProducesResponseType(StatusCodes.Status200OK)] 
     public async Task<ActionResult<PagedResult<TicketResponse>>> GetAll([FromQuery] TicketQueryRequest query)
     {
         var result = await _service.GetAllAsync(query);
@@ -27,7 +27,7 @@ public class TicketsController : ControllerBase
     }
 
     // GET api/tickets/{id}
-    [HttpGet("{id:int}")] // {id:int} -> route constraint: sadece int gelirse bu endpoint eşleşir
+    [HttpGet("{id:int}")] 
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)] 
     public async Task<ActionResult<TicketResponse>> GetById(int id)
@@ -40,17 +40,17 @@ public class TicketsController : ControllerBase
 
     // POST api/tickets
     [HttpPost] 
-    [ProducesResponseType(StatusCodes.Status201Created)] // Başarılı create -> 201
-    [ProducesResponseType(StatusCodes.Status400BadRequest)] // Validasyon hatası vs. -> 400 (middleware/validation formatına bağlı)
+    [ProducesResponseType(StatusCodes.Status201Created)] 
+    [ProducesResponseType(StatusCodes.Status400BadRequest)] 
     public async Task<ActionResult<TicketResponse>> Create([FromBody] CreateTicketRequest request)
     {
-        // [FromBody]: JSON body -> CreateTicketRequest'e map edilir
+        
         var created = await _service.CreateAsync(request);
 
         
         return CreatedAtAction(
             nameof(GetById),          
-            new { id = created.Id },  // Route parametresi (GetById'nin id'sini doldurur)
+            new { id = created.Id },  
             created                  
         );
     }
@@ -64,7 +64,7 @@ public class TicketsController : ControllerBase
         
         await _service.UpdateAsync(id, request);
 
-        // NoContent(): 204 döner, response body yok
+        
         return NoContent();
     }
 
@@ -89,7 +89,7 @@ public class TicketsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<List<TicketCommentResponse>>> GetComments(int ticketId)
     {
-        // Ticket yoksa service 404'ü exception ile tetikleyebilir
+        
         var comments = await _service.GetCommentsAsync(ticketId);
 
         return Ok(comments);
@@ -111,7 +111,7 @@ public class TicketsController : ControllerBase
     }
 
     // PUT api/tickets/comments/{commentId}
-    [HttpPut("comments/{commentId:int}")] // Yorum güncelleme (ticketId yerine commentId üzerinden gidiyor)
+    [HttpPut("comments/{commentId:int}")] // Yorum güncelleme 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateComment(
@@ -136,10 +136,10 @@ public class TicketsController : ControllerBase
 
 
 
-    // REPORTS
+    
 
     // GET api/tickets/reports/status
-    [HttpGet("reports/status")] // Ticket'ları status'a göre sayısal rapor olarak döndürür
+    [HttpGet("reports/status")] 
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<List<TicketStatusReportResponse>>> GetTicketCountByStatus()
     {
